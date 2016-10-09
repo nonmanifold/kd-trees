@@ -72,6 +72,7 @@ public class KdTreeTest {
             assertEquals(count, circle10.size());
             count++;
             circle10.insert(p);
+            assertTrue(circle10.contains(p));
         }
         assertEquals(count, circle10.size());
     }
