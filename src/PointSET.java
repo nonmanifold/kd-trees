@@ -1,6 +1,9 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.SET;
+import edu.princeton.cs.algs4.StdDraw;
+
+import java.util.ArrayList;
 
 public class PointSET {
 
@@ -34,6 +37,8 @@ public class PointSET {
 
     // draw all points to standard draw
     public void draw() {
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius(0.01);
         for (Point2D p : set) {
             p.draw();
         }
@@ -44,7 +49,13 @@ public class PointSET {
         if (rect == null) {
             throw new NullPointerException();
         }
-        return null;
+        ArrayList<Point2D> points = new ArrayList<Point2D>(set.size());
+        for (Point2D p : set) {
+            if (rect.distanceSquaredTo(p) == 0) {
+                points.add(p);
+            }
+        }
+        return points;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
