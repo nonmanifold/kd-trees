@@ -1,15 +1,19 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
 
 public class PointSET {
+
+    private SET<Point2D> set = new SET<>();
+
     // is the set empty?
     public boolean isEmpty() {
-        return false;
+        return set.isEmpty();
     }
 
     // number of points in the set
     public int size() {
-        return 0;
+        return set.size();
     }
 
     // add the point to the set (if it is not already in the set)
@@ -17,6 +21,7 @@ public class PointSET {
         if (p == null) {
             throw new NullPointerException();
         }
+        set.add(p);
     }
 
     // does the set contain point p?
@@ -24,11 +29,14 @@ public class PointSET {
         if (p == null) {
             throw new NullPointerException();
         }
-        return false;
+        return set.contains(p);
     }
 
     // draw all points to standard draw
     public void draw() {
+        for (Point2D p : set) {
+            p.draw();
+        }
     }
 
     // all points that are inside the rectangle
@@ -44,7 +52,16 @@ public class PointSET {
         if (p == null) {
             throw new NullPointerException();
         }
-        return p;
+        Point2D nearest = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+        for (Point2D point : set) {
+            double distance = point.distanceSquaredTo(p);
+            if (distance < minDistance) {
+                nearest = point;
+                minDistance = distance;
+            }
+        }
+        return nearest;
     }
 
     // unit testing of the methods (optional)

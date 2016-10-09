@@ -44,10 +44,12 @@ public class KdTreeTest {
 
     @Test
     public void NearestTest() {
-        KdTree instance = DataLoader.loadIntoKDTree("data/circle10.txt");
-        assertEquals(new Point2D(0.975528, 0.345492), instance.nearest(new Point2D(0.81, 0.30)));
+        KdTree empty = new KdTree();
+        assertEquals(null, empty.nearest(new Point2D(0.5, 0.5)));
+        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
+        assertEquals(new Point2D(0.975528, 0.345492), circle10.nearest(new Point2D(0.81, 0.30)));
 
-        KdTree instancek = DataLoader.loadIntoKDTree("data/circle10k.txt");
-        assertEquals(new Point2D(0.500000, 1.000000), instancek.nearest(new Point2D(0.81, 0.30)));
+        KdTree circle10k = DataLoader.loadIntoKDTree("data/circle10k.txt");
+        assertEquals(new Point2D(0.76125, 0.317125), circle10k.nearest(new Point2D(0.81, 0.30)));
     }
 }

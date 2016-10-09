@@ -44,10 +44,12 @@ public class PointSETTest {
 
     @Test
     public void NearestTest() {
-        PointSET instance = DataLoader.loadIntoPointSet("data/circle10.txt");
-        assertEquals(new Point2D(0.975528, 0.345492), instance.nearest(new Point2D(0.81, 0.30)));
+        PointSET empty = new PointSET();
+        assertEquals(null, empty.nearest(new Point2D(0.5, 0.5)));
+        PointSET circle10 = DataLoader.loadIntoPointSet("data/circle10.txt");
+        assertEquals(new Point2D(0.975528, 0.345492), circle10.nearest(new Point2D(0.81, 0.30)));
 
-        PointSET instancek = DataLoader.loadIntoPointSet("data/circle10k.txt");
-        assertEquals(new Point2D(0.500000, 1.000000), instancek.nearest(new Point2D(0.81, 0.30)));
+        PointSET circle10k = DataLoader.loadIntoPointSet("data/circle10k.txt");
+        assertEquals(new Point2D(0.76125, 0.317125), circle10k.nearest(new Point2D(0.81, 0.30)));
     }
 }
