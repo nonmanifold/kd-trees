@@ -1,7 +1,10 @@
 import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -40,6 +43,57 @@ public class KdTreeTest {
         // throw a java.lang.NullPointerException if passed a null argument
         thrown.expect(NullPointerException.class);
         instance.nearest(null);
+    }
+
+    @Test
+    public void isEmptyTest() {
+        KdTree empty = new KdTree();
+        assertTrue(empty.isEmpty());
+        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
+        assertFalse(circle10.isEmpty());
+    }
+
+    @Test
+    public void SizeTest() {
+        KdTree empty = new KdTree();
+        assertEquals(0, empty.size());
+        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
+        assertEquals(10, circle10.size());
+    }
+
+    @Test
+    public void ContainsTest() {
+        KdTree empty = new KdTree();
+        assertFalse(empty.contains(new Point2D(0.5, 0.5)));
+        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
+        assertFalse(circle10.contains(new Point2D(0.5, 0.5)));
+        circle10.insert(new Point2D(0.5, 0.5));
+        assertTrue(circle10.contains(new Point2D(0.5, 0.5)));
+    }
+
+    @Test
+    public void RangeTest() {
+        KdTree empty = new KdTree();
+
+        ArrayList<Point2D> emptyRange = new ArrayList<>();
+        for (Point2D p : empty.range(new RectHV(0.0, 0.0, 1.0, 1.0))) {
+            emptyRange.add(p);
+        }
+        assertEquals(0, emptyRange.size());
+
+        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
+
+        ArrayList<Point2D> range = new ArrayList<>();
+        for (Point2D p : circle10.range(new RectHV(0.0, 0.0, 1.0, 1.0))) {
+            range.add(p);
+        }
+        assertEquals(10, range.size());
+
+        ArrayList<Point2D> rangeReduced = new ArrayList<>();
+        for (Point2D p : circle10.range(new RectHV(0.0, 0.0, 0.024472 , 1.0))) {
+            rangeReduced.add(p);
+        }
+        assertEquals(2, rangeReduced.size());
     }
 
     @Test
