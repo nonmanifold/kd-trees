@@ -5,7 +5,6 @@ import edu.princeton.cs.algs4.StdDraw;
 public class KdTree {
     private static class Node {
         private Point2D p;      // the point
-        private RectHV rect;    // the axis-aligned rectangle corresponding to this node
         private Node lb;        // the left/bottom subtree
         private Node rt;        // the right/top subtree
 
@@ -23,19 +22,18 @@ public class KdTree {
 
     // number of points in the set
     public int size() {
-        if (isEmpty()) {
-            return 0;
-        } else {
-            return 1 + size(root);
-        }
+        return size(root, 0);
     }
 
     // return number of key-value pairs in BST rooted at x
-    private int size(Node x) {
+    private int size(Node x, int acc) {
         if (x == null)
-            return 0;
-        else
-            return 1 + size(x.lb) + size(x.rt);
+            return acc;
+        else {
+            acc = size(x.lb, acc);
+            acc = size(x.rt, acc);
+            return 1 + acc;
+        }
     }
 
     // add the point to the set (if it is not already in the set)
@@ -43,13 +41,13 @@ public class KdTree {
         if (p == null) {
             throw new NullPointerException();
         }
-        root = put(root, p, 0);
+        root = put(root, p, true);
     }
 
-    private double compare(Node x, Point2D p, int depth) {
+    private double compare(Node x, Point2D p, boolean isX) {
         double cmp;
 
-        if (depth % 2 == 0) {
+        if (isX) {
             // x
             cmp = x.p.x() - p.x();
         } else {
@@ -59,15 +57,15 @@ public class KdTree {
         return cmp;
     }
 
-    private Node put(Node x, Point2D p, int depth) {
+    private Node put(Node x, Point2D p, boolean isX) {
         if (x == null)
             return new Node(p);
-        double cmp = compare(x, p, depth);
+        double cmp = compare(x, p, isX);
 
         if (cmp < 0)
-            x.lb = put(x.lb, p, depth + 1);
+            x.lb = put(x.lb, p, !isX);
         else if (cmp > 0)
-            x.rt = put(x.rt, p, depth + 1);
+            x.rt = put(x.rt, p, !isX);
         else
             x.p = p;
         return x;
@@ -82,17 +80,17 @@ public class KdTree {
     }
 
     private Point2D get(Point2D key) {
-        return get(root, key, 0);
+        return get(root, key, true);
     }
 
-    private Point2D get(Node x, Point2D p, int depth) {
+    private Point2D get(Node x, Point2D p, boolean isX) {
         if (x == null)
             return null;
-        double cmp = compare(x, p, depth);
+        double cmp = compare(x, p, isX);
         if (cmp < 0)
-            return get(x.lb, p, depth + 1);
+            return get(x.lb, p, !isX);
         else if (cmp > 0)
-            return get(x.rt, p, depth + 1);
+            return get(x.rt, p, !isX);
         else
             return x.p;
     }
@@ -103,24 +101,24 @@ public class KdTree {
         StdDraw.setPenRadius(0.01);
         RectHV rect = new RectHV(0, 0, 1, 1);
 
-        draw(root, rect, 0);
+        draw(root, rect, true);
     }
 
-    private void draw(Node x, RectHV rect, int depth) {
+    private void draw(Node x, RectHV rect, boolean isX) {
         if (x == null) {
             return;
         }
         StdDraw.setPenRadius();
-        if (depth % 2 == 0) {
+        if (isX) {
             // x
             StdDraw.setPenColor(StdDraw.RED);
             StdDraw.line(x.p.x(), rect.ymin(), x.p.x(), rect.ymax());
 
             if (x.lb != null) {
-                draw(x.lb, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), depth + 1);
+                draw(x.lb, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false);
             }
             if (x.rt != null) {
-                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), depth + 1);
+                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false);
             }
         } else {
             // y
@@ -128,11 +126,11 @@ public class KdTree {
             StdDraw.line(rect.xmin(), x.p.y(), rect.xmax(), x.p.y());
 
             if (x.lb != null) {
-                draw(x.lb, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), depth + 1);
+                draw(x.lb, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true);
 
             }
             if (x.rt != null) {
-                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), depth + 1);
+                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true);
             }
         }
 

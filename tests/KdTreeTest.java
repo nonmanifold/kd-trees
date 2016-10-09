@@ -55,10 +55,25 @@ public class KdTreeTest {
 
     @Test
     public void SizeTest() {
-        KdTree empty = new KdTree();
-        assertEquals(0, empty.size());
-        KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
-        assertEquals(10, circle10.size());
+        KdTree tree = new KdTree();
+        assertEquals(0, tree.size());
+        tree.insert(new Point2D(0, 0));
+        assertEquals(1, tree.size());
+        tree.insert(new Point2D(0, 0));
+        tree.insert(new Point2D(0, 0));
+        assertEquals(1, tree.size());
+        tree.insert(new Point2D(1, 0));
+        assertEquals(2, tree.size());
+
+        ArrayList<Point2D> points = DataLoader.load("data/circle10.txt");
+        KdTree circle10 = new KdTree();
+        int count = 0;
+        for (Point2D p : points) {
+            assertEquals(count, circle10.size());
+            count++;
+            circle10.insert(p);
+        }
+        assertEquals(count, circle10.size());
     }
 
     @Test
@@ -90,7 +105,7 @@ public class KdTreeTest {
         assertEquals(10, range.size());
 
         ArrayList<Point2D> rangeReduced = new ArrayList<>();
-        for (Point2D p : circle10.range(new RectHV(0.0, 0.0, 0.024472 , 1.0))) {
+        for (Point2D p : circle10.range(new RectHV(0.0, 0.0, 0.024472, 1.0))) {
             rangeReduced.add(p);
         }
         assertEquals(2, rangeReduced.size());
