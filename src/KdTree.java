@@ -3,6 +3,8 @@ import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
+    private int size=0;
+
     private static class Node {
         private Point2D p;      // the point
         private Node lb;        // the left/bottom subtree
@@ -22,7 +24,7 @@ public class KdTree {
 
     // number of points in the set
     public int size() {
-        return size(root, 0);
+        return size;
     }
 
     // return number of key-value pairs in BST rooted at x
@@ -58,8 +60,10 @@ public class KdTree {
     }
 
     private Node put(Node x, Point2D p, boolean isX) {
-        if (x == null)
+        if (x == null) {
+            size++;
             return new Node(p);
+        }
         double cmp = compare(x, p, isX);
 
         if (cmp < 0)
