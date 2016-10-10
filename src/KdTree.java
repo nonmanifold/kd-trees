@@ -2,8 +2,10 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
+import java.util.ArrayList;
+
 public class KdTree {
-    private int size=0;
+    private int size = 0;
 
     private static class Node {
         private Point2D p;      // the point
@@ -25,17 +27,6 @@ public class KdTree {
     // number of points in the set
     public int size() {
         return size;
-    }
-
-    // return number of key-value pairs in BST rooted at x
-    private int size(Node x, int acc) {
-        if (x == null)
-            return acc;
-        else {
-            acc = size(x.lb, acc);
-            acc = size(x.rt, acc);
-            return 1 + acc;
-        }
     }
 
     // add the point to the set (if it is not already in the set)
@@ -117,10 +108,10 @@ public class KdTree {
             StdDraw.line(x.p.x(), rect.ymin(), x.p.x(), rect.ymax());
 
             if (x.lb != null) {
-                draw(x.lb, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false);
+                draw(x.lb, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false);
             }
             if (x.rt != null) {
-                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false);
+                draw(x.rt, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false);
             }
         } else {
             // y
@@ -128,11 +119,10 @@ public class KdTree {
             StdDraw.line(rect.xmin(), x.p.y(), rect.xmax(), x.p.y());
 
             if (x.lb != null) {
-                draw(x.lb, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true);
-
+                draw(x.lb, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true);
             }
             if (x.rt != null) {
-                draw(x.rt, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true);
+                draw(x.rt, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true);
             }
         }
 
@@ -147,13 +137,50 @@ public class KdTree {
         if (rect == null) {
             throw new NullPointerException();
         }
-        return null;
+        ArrayList<Point2D> range = new ArrayList<>();
+        search(range, root, new RectHV(0, 0, 1, 1), true, rect);
+        return range;
     }
+
+    private void search(ArrayList<Point2D> range, Node x, RectHV nodeRect, boolean isX, RectHV rect) {
+        if (x == null) {
+            return;
+        }
+        if (!nodeRect.intersects(rect)) {
+            return;
+        }
+        if (rect.contains(x.p)) {
+            range.add(x.p);
+        }
+
+        if (isX) {
+            // x
+            if (x.lb != null) {
+                search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false, rect);
+            }
+            if (x.rt != null) {
+                search(range, x.rt, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false, rect);
+            }
+        } else {
+            // y
+            if (x.lb != null) {
+                search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true, rect);
+            }
+            if (x.rt != null) {
+                search(range, x.rt, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true, rect);
+            }
+        }
+
+    }
+
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
         if (p == null) {
             throw new NullPointerException();
+        }
+        if (size == 0) {
+            return null;
         }
         return p;
     }
