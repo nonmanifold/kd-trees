@@ -49,10 +49,10 @@ public class KdTree {
 
         if (isX) {
             // x
-            cmp = x.p.x() - p.x();
+            cmp = p.x() - x.p.x();
         } else {
             // y
-            cmp = x.p.y() - p.y();
+            cmp = p.y() - x.p.y();
         }
         return cmp;
     }
@@ -66,8 +66,9 @@ public class KdTree {
             x.lb = put(x.lb, p, !isX);
         else if (cmp > 0)
             x.rt = put(x.rt, p, !isX);
-        else
-            x.p = p;
+        else if (!x.p.equals(p)) {
+            x.rt = put(x.rt, p, !isX);
+        }
         return x;
     }
 
@@ -76,23 +77,20 @@ public class KdTree {
         if (p == null) {
             throw new NullPointerException();
         }
-        return get(p) != null;
-    }
-
-    private Point2D get(Point2D key) {
-        return get(root, key, true);
+        return p.equals(get(root, p, true));
     }
 
     private Point2D get(Node x, Point2D p, boolean isX) {
         if (x == null)
             return null;
         double cmp = compare(x, p, isX);
+        if (x.p.equals(p)) {
+            return p;
+        }
         if (cmp < 0)
             return get(x.lb, p, !isX);
-        else if (cmp > 0)
-            return get(x.rt, p, !isX);
         else
-            return x.p;
+            return get(x.rt, p, !isX);
     }
 
     // draw all points to standard draw

@@ -54,6 +54,29 @@ public class KdTreeTest {
     }
 
     @Test
+    public void SizeTestG() {
+        Point2D[] ps = new Point2D[]{
+                new Point2D(3, 6),
+                new Point2D(17, 15),
+                new Point2D(13, 15),
+                new Point2D(6, 12),
+                new Point2D(9, 1),
+                new Point2D(2, 7),
+                new Point2D(10, 19),
+                new Point2D(10, 19)
+        };
+
+        KdTree tree = new KdTree();
+        int count = 0;
+        for (Point2D p : ps) {
+            count++;
+            tree.insert(p);
+            //assertTrue(tree.contains(p));
+        }
+        assertEquals(count - 1, tree.size());
+    }
+
+    @Test
     public void SizeTest() {
         KdTree tree = new KdTree();
         assertEquals(0, tree.size());
