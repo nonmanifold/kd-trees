@@ -71,7 +71,7 @@ public class KdTreeTest {
         for (Point2D p : ps) {
             count++;
             tree.insert(p);
-            //assertTrue(tree.contains(p));
+            assertTrue(tree.contains(p));
         }
         assertEquals(count - 1, tree.size());
     }
@@ -111,7 +111,7 @@ public class KdTreeTest {
     }
 
     @Test
-    public void RangeTest() {
+    public void RangeEmptyTest() {
         KdTree empty = new KdTree();
 
         ArrayList<Point2D> emptyRange = new ArrayList<>();
@@ -119,7 +119,23 @@ public class KdTreeTest {
             emptyRange.add(p);
         }
         assertEquals(0, emptyRange.size());
+    }
 
+    @Test
+    public void RangeSimpleTest() {
+
+        KdTree simple = new KdTree();
+        simple.insert(new Point2D(0.5, 0.5));
+        simple.insert(new Point2D(0.2, 0.2));
+        ArrayList<Point2D> simpleRange = new ArrayList<>();
+        for (Point2D p : simple.range(new RectHV(0.0, 0.0, 1.0, 1.0))) {
+            simpleRange.add(p);
+        }
+        assertEquals(2, simpleRange.size());
+    }
+
+    @Test
+    public void RangeAllTest() {
         KdTree circle10 = DataLoader.loadIntoKDTree("data/circle10.txt");
 
         ArrayList<Point2D> range = new ArrayList<>();
@@ -127,12 +143,50 @@ public class KdTreeTest {
             range.add(p);
         }
         assertEquals(10, range.size());
+    }
+
+    @Test
+    public void RangePartTest() {
+
+        Point2D[] ps = new Point2D[]{
+                new Point2D(0.7, 0.2),
+                new Point2D(0.5, 0.4),
+                new Point2D(0.2, 0.3),
+                new Point2D(0.4, 0.7),
+                new Point2D(0.9, 0.6)
+        };
+
+        KdTree tree = new KdTree();
+        int count = 0;
+        for (Point2D p : ps) {
+            count++;
+            tree.insert(p);
+        }
 
         ArrayList<Point2D> rangeReduced = new ArrayList<>();
-        for (Point2D p : circle10.range(new RectHV(0.0, 0.0, 0.024472, 1.0))) {
+        for (Point2D p : tree.range(new RectHV(0.0, 0.0, 0.01, 1.0))) {
             rangeReduced.add(p);
         }
-        assertEquals(2, rangeReduced.size());
+        assertEquals(0, rangeReduced.size());
+
+        rangeReduced = new ArrayList<>();
+        for (Point2D p : tree.range(new RectHV(0.0, 0.0, 1.0, 0.01))) {
+            rangeReduced.add(p);
+        }
+        assertEquals(0, rangeReduced.size());
+
+
+        rangeReduced = new ArrayList<>();
+        for (Point2D p : tree.range(new RectHV(0.99, 0.0, 1.0, 0.0))) {
+            rangeReduced.add(p);
+        }
+        assertEquals(0, rangeReduced.size());
+
+        rangeReduced = new ArrayList<>();
+        for (Point2D p : tree.range(new RectHV(0, 0.99, 0.0, 0.99))) {
+            rangeReduced.add(p);
+        }
+        assertEquals(0, rangeReduced.size());
     }
 
     @Test

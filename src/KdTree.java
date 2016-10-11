@@ -155,18 +155,18 @@ public class KdTree {
 
         if (isX) {
             // x
-            if (x.lb != null) {
+            if (x.lb != null && x.lb.p.x() >= rect.xmin()) {
                 search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false, rect);
             }
-            if (x.rt != null) {
+            if (x.rt != null && x.rt.p.x() <= rect.xmax()) {
                 search(range, x.rt, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false, rect);
             }
         } else {
             // y
-            if (x.lb != null) {
+            if (x.lb != null && x.lb.p.y() >= rect.ymin()) {
                 search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true, rect);
             }
-            if (x.rt != null) {
+            if (x.rt != null && x.rt.p.y() <= rect.ymax()) {
                 search(range, x.rt, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true, rect);
             }
         }
