@@ -155,24 +155,23 @@ public class KdTree {
 
         if (isX) {
             // x
-            if (x.lb != null && x.lb.p.x() >= rect.xmin()) {
-                search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), x.p.x(), rect.ymax()), false, rect);
+            if (x.lb != null) {
+                search(range, x.lb, new RectHV(nodeRect.xmin(), nodeRect.ymin(), x.p.x(), nodeRect.ymax()), false, rect);
             }
-            if (x.rt != null && x.rt.p.x() <= rect.xmax()) {
-                search(range, x.rt, new RectHV(x.p.x(), rect.ymin(), rect.xmax(), rect.ymax()), false, rect);
+            if (x.rt != null) {
+                search(range, x.rt, new RectHV(x.p.x(), nodeRect.ymin(), nodeRect.xmax(), nodeRect.ymax()), false, rect);
             }
         } else {
             // y
-            if (x.lb != null && x.lb.p.y() >= rect.ymin()) {
-                search(range, x.lb, new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), x.p.y()), true, rect);
+            if (x.lb != null) {
+                search(range, x.lb, new RectHV(nodeRect.xmin(), nodeRect.ymin(), nodeRect.xmax(), x.p.y()), true, rect);
             }
-            if (x.rt != null && x.rt.p.y() <= rect.ymax()) {
-                search(range, x.rt, new RectHV(rect.xmin(), x.p.y(), rect.xmax(), rect.ymax()), true, rect);
+            if (x.rt != null) {
+                search(range, x.rt, new RectHV(nodeRect.xmin(), x.p.y(), nodeRect.xmax(), nodeRect.ymax()), true, rect);
             }
         }
 
     }
-
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
